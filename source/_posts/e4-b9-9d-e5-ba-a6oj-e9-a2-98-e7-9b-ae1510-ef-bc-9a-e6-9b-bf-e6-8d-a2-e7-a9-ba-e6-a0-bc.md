@@ -1,0 +1,65 @@
+title: 九度OJ 题目1510：替换空格
+id: 106
+categories:
+  - Algorithm
+date: 2014-09-26 06:21:54
+tags:
+---
+
+题目1510：替换空格
+时间限制：1 秒
+内存限制：128 兆
+特殊判题：否
+提交：6687
+解决：1722
+题目描述：请实现一个函数，将一个字符串中的空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
+
+输入：每个输入文件仅包含一组测试样例。
+对于每组测试案例，输入一行代表要处理的字符串。
+
+输出：对应每个测试案例，出经过处理后的字符串。
+
+样例输入：
+We Are Happy
+
+样例输出：
+We%20Are%20Happy
+
+AC code:
+
+<pre class="lang:c++ decode:true ">#include &lt;iostream&gt;
+#include &lt;stdio.h&gt;
+
+using namespace std;
+
+int main()
+{
+    string str;
+    getline (cin,str);
+    int i=0;
+
+    string result;
+    while(str.c_str()[i]!=-1)
+    {
+        if(str.c_str()[i]!=' ')
+            result+=(str.c_str()[i]);
+        else
+            result.append("%20");
+        i++;
+    }
+    printf("%s",result.c_str());
+    //printf("%d",i);
+    return 0;
+}
+
+/**************************************************************
+    Problem: 1510
+    User: dkmeteor
+    Language: C++
+    Result: Accepted
+    Time:30 ms
+    Memory:2536 kb
+****************************************************************/</pre>
+
+题目本身很简单
+主要时间花在搜索怎么读入带空格的字符串,用scanf调了半天..最后放弃了...还是用getLine直接读整行了
