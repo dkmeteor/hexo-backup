@@ -23,7 +23,10 @@ http://www.eoeandroid.com/forum.php?mod=viewthread&amp;tid=579938&amp;page=1
 百度一搜,可以搜到大量解决办法.
 
 结果提炼一下: 大致就是讲 UI元素/视图元素 必须在 UI线程(主线程)中更新修改.
-很长时间以来我也以为是这样.
+
+新手这样理解就够了.
+
+---
 
 但是仔细看这个Exception说明
 
@@ -68,6 +71,7 @@ http://www.eoeandroid.com/forum.php?mod=viewthread&amp;tid=579938&amp;page=1
 由ViewRoot的构造函数可以看到,mThread被绑定在了 创建`viewRoot`的线程上.
 
 当然大部分情况下,`ViewRoot`都是在主线程中创建的,所以在异步线程中修改view会造成checkThread失败.
+
 
 mTextView.setText("123");为例子.
 
@@ -260,7 +264,7 @@ demo代码如下:
   mButton.setText( "22222222" );
 
 是在主线程中执行
-可以看到,这段代码即使是在主线程中执行,依然抛出了calledfromwrongthreadexception
+可以看到,这段代码即使是在主线程中执行,依然抛出了CalledFromWrongThreadException
 
 在特意构造的这个特殊场景下,主线程/UI线程中 不能更新在异步线程中"创建/添加"的UI元素!!
 

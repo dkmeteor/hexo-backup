@@ -24,41 +24,42 @@ demo更不知道是哪年的版本
 比较正确的请参考这个
 
 http://stackoverflow.com/questions/19658145/how-to-use-the-renderscript-support-library-with-gradle/22976675#22976675
+
 以我的项目为例
 目前是这样的
 
-apply plugin: 'com.android.application'
-
-android {
-compileSdkVersion 21
-buildToolsVersion "21.1.2"
-
-defaultConfig {
-applicationId "com.dk.heartbeats"
-minSdkVersion 17
-targetSdkVersion 21
-versionCode 1
-versionName "1.0"
-renderscriptTargetApi 19
-renderscriptSupportModeEnabled false
-}
-
-buildTypes {
-release {
-minifyEnabled false
-proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-}
-}
-
-}
-
-dependencies {
-compile fileTree(dir: 'libs', include: ['*.jar'])
-compile 'com.android.support:appcompat-v7:21.0.3'
-compile 'com.jakewharton:butterknife:6.0.0'
-compile files('libs/jtransforms-2.4.jar')
-compile files('libs/renderscript-v8.jar')
-}
+    apply plugin: 'com.android.application'
+    
+    android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+    
+    defaultConfig {
+    applicationId "com.dk.heartbeats"
+    minSdkVersion 17
+    targetSdkVersion 21
+    versionCode 1
+    versionName "1.0"
+    renderscriptTargetApi 19
+    renderscriptSupportModeEnabled false
+    }
+    
+    buildTypes {
+    release {
+    minifyEnabled false
+    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+    }
+    
+    }
+    
+    dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.jakewharton:butterknife:6.0.0'
+    compile files('libs/jtransforms-2.4.jar')
+    compile files('libs/renderscript-v8.jar')
+    }
 
 注意这个
 `renderscriptSupportModeEnabled true`
@@ -91,19 +92,19 @@ renderscriptTargetApi 19
 
 同时，早期Gradle版本可以通过
 
-sourceSets {
-main {
-manifest.srcFile 'AndroidManifest.xml'
-java.srcDirs = ['src']
-resources.srcDirs = ['src']
-aidl.srcDirs = ['src']
-renderscript.srcDirs = ['src']
-res.srcDirs = ['res']
-assets.srcDirs = ['assets']
-}
-
-instrumentTest.setRoot('tests')
-}
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    
+    instrumentTest.setRoot('tests')
+    }
 
 指定编译路径
 恩
@@ -117,18 +118,18 @@ rs文件夹下...
 
 项目结构像这样
 
-<pre class="lang:default decode:true ">--app
---builds
---libs
---src
-    --android test
-    --main
-        --java
-        --res
-        --rs
-        AndroidManifest.xml</pre>
+    --app
+    --builds
+    --libs
+    --src
+        --android test
+        --main
+            --java
+            --res
+            --rs
+            AndroidManifest.xml
 
-&nbsp;
+
 
 意会一下...就是默认gradle项目格式...放在和java同层的rs文件夹里才会生成对应的`ScriptC_yuv.java`文件
 

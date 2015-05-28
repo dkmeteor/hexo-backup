@@ -10,7 +10,6 @@ tags:
 
 [![redirect](http://dk-exp.com/wp-content/uploads/2014/12/redirect-1024x576.png)](http://dk-exp.com/wp-content/uploads/2014/12/redirect.png)
 
-&nbsp;
 
 CircularRedirectException 循环重定向
 其实并没有真的发生循环重定向
@@ -19,11 +18,11 @@ CircularRedirectException 循环重定向
 
 https://stage.ajinga.com/v1/client-jobs/2680
 
--&gt;
+-->
 
 http://stage.ajinga.com/m/client-jobs/2680/
 
--&gt;
+-->
 
 https://stage.ajinga.com/m/client-jobs/2680/
 

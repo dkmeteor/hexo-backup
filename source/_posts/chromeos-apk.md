@@ -10,9 +10,7 @@ tags:
 
 [![QQ图片20141010005110](http://dk-exp.com/wp-content/uploads/2014/10/QQ图片20141010005110-300x160.jpg)](http://dk-exp.com/wp-content/uploads/2014/10/QQ图片20141010005110.jpg)
 
-&nbsp;
 
-&nbsp;
 
 换了一个64位ARC以后 终于跑起来了
 
@@ -20,7 +18,7 @@ tags:
 
 比AVD性能好很多，明天试试Debug 和 logcat能不能连上。
 
-&nbsp;
+
 
 目前已知依赖Google play service的应用转换后都无法运行
 

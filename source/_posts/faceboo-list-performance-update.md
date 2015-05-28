@@ -9,6 +9,120 @@ tags:
 
 关于 Facebook新闻页优化 的分析
 
+
+#私货
+
+简单一点概括，就是Facebook在ListView页面中，将原来的View-Model-Binder再次拆解成粒度更细的模型。
+
+
+在原本的`View-Model-Binder`模型中，依靠将部分的View设置成`visible` 或 `gone` 来控制功能块的显示 （转帖/图片/etc）
+
+
+在优化过的模型中，原本的View被拆解成更细粒度的小View，然后只加载需要的部分
+
+
+原文没有提及，但应当是利用
+
+    public int getItemViewType(int position) {
+    return 0;
+    }
+    
+    public int getViewTypeCount() {
+    return 1;
+    }
+
+
+
+
+
+实现的。
+
+
+
+翻了一下ListView源代码
+
+不同type的View被分类cache在RecycleBin中
+
+
+
+    public void setViewTypeCount(int viewTypeCount) {
+        if (viewTypeCount &lt; 1) {
+            throw new IllegalArgumentException("Can't have a viewTypeCount &lt; 1");
+        }
+        //noinspection unchecked
+        ArrayList&lt;View&gt;[] scrapViews = new ArrayList[viewTypeCount];
+        for (int i = 0; i &lt; viewTypeCount; i++) {
+            scrapViews[i] = new ArrayList&lt;View&gt;();
+        }
+        mViewTypeCount = viewTypeCount;
+        mCurrentScrap = scrapViews[0];
+        mScrapViews = scrapViews;
+    }
+
+
+
+
+
+参考RecycleBin的setViewTypeCount部分，此处用ArrayList[]来cache所有type的view
+
+
+不过由于被设置成gone的View本身就不参与meaure和layout,也不会参与draw,只会额外占据一些内存。
+
+所以Facebook做了这些优化以后  性能只提升了10%
+
+
+在View的性能优化中，我觉得10%太少了，而新的模型复杂度变高了很多。
+
+
+原本由于ViewType的原因，需要将Model和View的实现细节暴露在 Adapter中，Facebook这个优化实现似乎为了保持其封装性
+
+于是将View-Model-Binder又通过Definition又封装了一层。
+
+
+
+综合考虑的话....我觉得意义不大。
+
+
+
+优化掉了一些无用View,但是增加了额外的中间层，很难说这样的改动是好是坏。
+
+IOS开发可能更习惯View-Binder写法
+
+Android开发可能会更习惯直接使用ViewHolder去操作
+
+
+
+而Facebook这个写法更复杂，增加了额外的Definition层，Binder也根据ViewType被拆解成多个。
+
+---
+
+
+
+考虑一下直接用最大粒度的View来做ViewType区分？
+
+思考了一下....参考Faacebook或微博这个界面...应当是不行的...
+
+
+同屏最多也就 2~4条 post
+
+直接用Item做type区分的话....由于数据随机性的问题
+
+cache会被经常性的加载和释放.....反而起不到作用...
+
+
+使用细粒度的子View做type区分的话，在cache上有优势的多..
+
+---
+
+**结论：有用，必要性不足。**
+
+
+**鉴于这个Definition模型的复杂度，非微博，facebook,朋友圈类型的复杂Item，并不需要使用此优化方法。**
+
+
+**正常使用View-model-binder模型就好了**
+
+---
 中文版
 http://blog.aaapei.com/article/2015/02/facebookxin-wen-ye-listviewyou-hua
 
@@ -135,140 +249,7 @@ This rewrite effort has resulted in many benefits:
 
 This has been a great undertaking to replace such a core piece of code seamlessly, but the hard work was worth it as it paid of both in improving the performance, and the reliability and maintainability of the code.
 
-<div>简单一点概括，就是Facebook在ListView页面中，将原来的View-Model-Binder再次拆解成粒度更细的模型。</div>
 
-<div></div>
 
-<div>在原本的View-Model-Binder模型中，依靠将部分的View设置成visible 或gone 来控制功能块的显示 （转帖/图片/etc）</div>
+---
 
-<div></div>
-
-<div></div>
-
-<div>在优化过的模型中，原本的View被拆解成更细粒度的小View，然后只加载需要的部分</div>
-
-<div></div>
-
-<div>原文没有提及，但应当是利用</div>
-
-<div></div>
-
-<div>
-<pre class="lang:default decode:true">public int getItemViewType(int position) {
-return 0;
-}
-
-public int getViewTypeCount() {
-return 1;
-}</pre>
-&nbsp;
-
-</div>
-
-<div></div>
-
-<div>实现的。</div>
-
-<div></div>
-
-<div>翻了一下ListView源代码</div>
-
-<div>不同type的View被分类cache在RecycleBin中</div>
-
-<div></div>
-
-<div>
-<pre class="lang:default decode:true">public void setViewTypeCount(int viewTypeCount) {
-if (viewTypeCount &lt; 1) {
-throw new IllegalArgumentException("Can't have a viewTypeCount &lt; 1");
-}
-//noinspection unchecked
-ArrayList&lt;View&gt;[] scrapViews = new ArrayList[viewTypeCount];
-for (int i = 0; i &lt; viewTypeCount; i++) {
-scrapViews[i] = new ArrayList&lt;View&gt;();
-}
-mViewTypeCount = viewTypeCount;
-mCurrentScrap = scrapViews[0];
-mScrapViews = scrapViews;
-}</pre>
-&nbsp;
-
-</div>
-
-<div></div>
-
-<div>参考RecycleBin的setViewTypeCount部分，此处用ArrayList[]来cache所有type的view</div>
-
-<div></div>
-
-<div></div>
-
-<div>不过由于被设置成gone的View本身就不参与meaure和layout,也不会参与draw,只会额外占据一些内存。</div>
-
-<div>所以Facebook做了这些优化以后  性能只提升了10%</div>
-
-<div></div>
-
-<div>在View的性能优化中，我觉得10%太少了，而新的模型复杂度变高了很多。</div>
-
-<div></div>
-
-<div>原本由于ViewType的原因，需要将Model和View的实现细节暴露在 Adapter中，Facebook这个优化实现似乎为了保持其封装性</div>
-
-<div>于是将View-Model-Binder又通过Definition又封装了一层。</div>
-
-<div></div>
-
-<div>综合考虑的话....我觉得意义不大。</div>
-
-<div></div>
-
-<div>优化掉了一些无用View,但是增加了额外的中间层，很难说这样的改动是好是坏。</div>
-
-<div>IOS开发可能更习惯View-Binder写法</div>
-
-<div>Android开发可能会更习惯直接使用ViewHolder去操作</div>
-
-<div></div>
-
-<div>而Facebook这个写法更复杂，增加了额外的Definition层，Binder也根据ViewType被拆解成多个。</div>
-
-<div></div>
-
-<div>---</div>
-
-<div></div>
-
-<div>考虑一下直接用最大粒度的View来做ViewType区分？</div>
-
-<div>思考了一下....参考Faacebook或微博这个界面...应当是不行的...</div>
-
-<div></div>
-
-<div>同屏最多也就 2~4条 post</div>
-
-<div>直接用Item做type区分的话....由于数据随机性的问题</div>
-
-<div>cache会被经常性的加载和释放.....反而起不到作用...</div>
-
-<div></div>
-
-<div>使用细粒度的子View做type区分的话，在cache上有优势的多..</div>
-
-<div></div>
-
-<div>---</div>
-
-<div></div>
-
-<div>**结论：有用，必要性不足。**</div>
-
-<div></div>
-
-<div></div>
-
-<div>**鉴于这个Definition模型的复杂度，非微博，facebook,朋友圈类型的复杂Item，并不需要使用此优化方法。**</div>
-
-<div></div>
-
-<div>**正常使用View-model-binder模型就好了**</div>

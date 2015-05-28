@@ -29,7 +29,6 @@ https://github.com/Yalantis/Euclid
 >   - Animate shared elements (hero views) in transitions between activities (or fragments)
 >   - Animate View elements from one activity scene to another.
 
-&nbsp;
 Github上有个低版本的兼容库 https://github.com/tianzhijiexian/ActivityOptionsICS
 使用在Intent上传递Bitmap做到View的传递，不过只有视觉上的效果，因为传过去的并不是View，只是用指定View生成的Bitmap
 

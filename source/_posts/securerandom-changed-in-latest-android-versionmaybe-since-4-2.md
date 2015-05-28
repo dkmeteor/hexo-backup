@@ -6,159 +6,159 @@ date: 2014-11-11 02:13:15
 tags:
 ---
 
-<div style="color: #000000;"></div>
-
-<div style="color: #000000;">
 
 使用以前的自己写的一个AES加密工具类的时候发现跑不通了,调用会直接crash,并抛出
-<pre class="lang:java decode:true ">11-11 09:05:16.747: W/System.err(13832): java.security.NoSuchAlgorithmException: SecureRandom AES implementation not found</pre>
-&nbsp;
+
+    11-11 09:05:16.747: W/System.err(13832): java.security.NoSuchAlgorithmException: SecureRandom AES implementation not found
+    
+
 
 源代码如下:
-<pre class="lang:java decode:true ">import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.util.Locale;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
-/**
-* 
-* @author Peter.Ding
-* 
-*/public class AESTools {
-    private static AESTools instance = new AESTools();
-    private String password = "peter.ding@augmentum.com";
-    private KeyGenerator kgen;
-
-    private AESTools() {
-    }
-
-    public static AESTools getInstance() {
-        return instance;
-    }
-
-    public String encrypt(String content) {
-        try {
-            kgen = KeyGenerator.getInstance("AES");
-            Provider p = Security.getProvider("BC");
-            SecureRandom s = SecureRandom.getInstance("AES", p);
-
-            //The right code 
-            //Provider p = Security.getProvider("Crypto"); 
-            //SecureRandom s = SecureRandom.getInstance("SHA1PRNG", p);
-
-            s.setSeed(password.getBytes());
-            kgen.init(128, s);
-            SecretKey secretKey = kgen.generateKey();
-            byte[] enCodeFormat = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            byte[] byteContent = content.getBytes("utf-8");
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            byte[] result = cipher.doFinal(byteContent);
-            return bytesToHexString(result);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
+    import java.io.UnsupportedEncodingException;
+    import java.security.InvalidKeyException;
+    import java.security.NoSuchAlgorithmException;
+    import java.security.Provider;
+    import java.security.SecureRandom;
+    import java.security.Security;
+    import java.util.Locale;
+    
+    import javax.crypto.BadPaddingException;
+    import javax.crypto.Cipher;
+    import javax.crypto.IllegalBlockSizeException;
+    import javax.crypto.KeyGenerator;
+    import javax.crypto.NoSuchPaddingException;
+    import javax.crypto.SecretKey;
+    import javax.crypto.spec.SecretKeySpec;
+    
+    /**
+    * 
+    * @author Peter.Ding
+    * 
+    */public class AESTools {
+        private static AESTools instance = new AESTools();
+        private String password = "peter.ding@augmentum.com";
+        private KeyGenerator kgen;
+    
+        private AESTools() {
         }
-        return null;
-    }
-
-    public String decrypt(String str) {
-        byte[] content = hexStringToByte(str);
-        try {
-            kgen = KeyGenerator.getInstance("AES");
-            Provider p = Security.getProvider("BC");
-            SecureRandom s = SecureRandom.getInstance("AES", p);
-
-            //The right code 
-            //Provider p = Security.getProvider("Crypto"); 
-            //SecureRandom s = SecureRandom.getInstance("SHA1PRNG", p);
-
-            s.setSeed(password.getBytes());
-            kgen.init(128, s);
-            SecretKey secretKey = kgen.generateKey();
-            byte[] enCodeFormat = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, key);
-            byte[] result = cipher.doFinal(content);
-            System.out.println(bytesToHexString(result));
-            return new String(result, "utf-8");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+    
+        public static AESTools getInstance() {
+            return instance;
         }
-        return null;
-    }
-
-    public String bytesToHexString(byte[] src) {
-        StringBuilder stringBuilder = new StringBuilder("");
-        if (src == null || src.length &lt;= 0) {
+    
+        public String encrypt(String content) {
+            try {
+                kgen = KeyGenerator.getInstance("AES");
+                Provider p = Security.getProvider("BC");
+                SecureRandom s = SecureRandom.getInstance("AES", p);
+    
+                //The right code 
+                //Provider p = Security.getProvider("Crypto"); 
+                //SecureRandom s = SecureRandom.getInstance("SHA1PRNG", p);
+    
+                s.setSeed(password.getBytes());
+                kgen.init(128, s);
+                SecretKey secretKey = kgen.generateKey();
+                byte[] enCodeFormat = secretKey.getEncoded();
+                SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+                Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+                byte[] byteContent = content.getBytes("utf-8");
+                cipher.init(Cipher.ENCRYPT_MODE, key);
+                byte[] result = cipher.doFinal(byteContent);
+                return bytesToHexString(result);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            }
             return null;
         }
-        for (int i = 0; i &lt; src.length; i++) {
-            int v = src[i] &amp; 0xFF;
-            String hv = Integer.toHexString(v);
-            if (hv.length() &lt; 2) {
-                stringBuilder.append(0);
+    
+        public String decrypt(String str) {
+            byte[] content = hexStringToByte(str);
+            try {
+                kgen = KeyGenerator.getInstance("AES");
+                Provider p = Security.getProvider("BC");
+                SecureRandom s = SecureRandom.getInstance("AES", p);
+    
+                //The right code 
+                //Provider p = Security.getProvider("Crypto"); 
+                //SecureRandom s = SecureRandom.getInstance("SHA1PRNG", p);
+    
+                s.setSeed(password.getBytes());
+                kgen.init(128, s);
+                SecretKey secretKey = kgen.generateKey();
+                byte[] enCodeFormat = secretKey.getEncoded();
+                SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+                Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+                cipher.init(Cipher.DECRYPT_MODE, key);
+                byte[] result = cipher.doFinal(content);
+                System.out.println(bytesToHexString(result));
+                return new String(result, "utf-8");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            stringBuilder.append(hv);
+            return null;
         }
-        return stringBuilder.toString().toUpperCase(Locale.ENGLISH);
-    }
-
-    public static byte[] hexStringToByte(String hex) {
-        int len = (hex.length() / 2);
-        byte[] result = new byte[len];
-        char[] achar = hex.toCharArray();
-        for (int i = 0; i &lt; len; i++) {
-            int pos = i * 2;
-            result[i] = (byte) (toByte(achar[pos]) &lt;&lt; 4 | toByte(achar[pos + 1]));
+    
+        public String bytesToHexString(byte[] src) {
+            StringBuilder stringBuilder = new StringBuilder("");
+            if (src == null || src.length &lt;= 0) {
+                return null;
+            }
+            for (int i = 0; i &lt; src.length; i++) {
+                int v = src[i] &amp; 0xFF;
+                String hv = Integer.toHexString(v);
+                if (hv.length() &lt; 2) {
+                    stringBuilder.append(0);
+                }
+                stringBuilder.append(hv);
+            }
+            return stringBuilder.toString().toUpperCase(Locale.ENGLISH);
         }
-        return result;
+    
+        public static byte[] hexStringToByte(String hex) {
+            int len = (hex.length() / 2);
+            byte[] result = new byte[len];
+            char[] achar = hex.toCharArray();
+            for (int i = 0; i &lt; len; i++) {
+                int pos = i * 2;
+                result[i] = (byte) (toByte(achar[pos]) &lt;&lt; 4 | toByte(achar[pos + 1]));
+            }
+            return result;
+        }
+    
+        private static byte toByte(char c) {
+            byte b = (byte) "0123456789ABCDEF".indexOf(c);
+            return b;
+        }
+    
     }
-
-    private static byte toByte(char c) {
-        byte b = (byte) "0123456789ABCDEF".indexOf(c);
-        return b;
-    }
-
-}</pre>
-&nbsp;
 
 以上代码是我12年的时候为 加密数据库写的,我马上意识到肯定是Android又修改了Security Provider,当时2.1 2.3适配把我坑了一次,4.0适配又把我坑了一次,没想到还要坑我第三次.....无语...
-<pre class="lang:java decode:true ">Provider p = Security.getProvider("BC");
-SecureRandom s = SecureRandom.getInstance("AES", p);</pre>
-&nbsp;
+
+    Provider p = Security.getProvider("BC");
+    SecureRandom s = SecureRandom.getInstance("AES", p);
+
 
 报错的就是上面这行代码,果断复制粘贴百度
 

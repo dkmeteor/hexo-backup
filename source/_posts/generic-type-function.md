@@ -14,38 +14,33 @@ tags:
 
 写起代码来大概是这样
 
-&nbsp;
-
-<pre class="lang:java decode:true">public class MainActivity extends Activity{
-    private Button mButton;
-    private TextView mTextView;
-    private ListView mListView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mButton = $(R.id.button);
-        mTextView = $(R.id.textview);
-        mListView = $(R.id.listview);
-
+    public class MainActivity extends Activity{
+        private Button mButton;
+        private TextView mTextView;
+        private ListView mListView;
+    
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+    
+            mButton = $(R.id.button);
+            mTextView = $(R.id.textview);
+            mListView = $(R.id.listview);
+    
+        }
+    
+        public <T extends View> T $(int id)
+        {
+            return (T) super.findViewById(id);
+        }
     }
-
-    public &lt;T extends View&gt; T $(int id)
-    {
-        return (T) super.findViewById(id);
-    }
-}</pre>
-
-&nbsp;
 
 一种JQuery的感觉。。。主要是这个$伪装成操作符的样子很有迷惑性...当然JQuery里的$本身也是这样实现的.....
 
-&nbsp;
 
 好处大概是代码压缩的厉害。。省掉了强制类型转换。。写起代码来清晰一些。。
 
-使用起来方便。。一共才2行代码。。扔BaseActivity里就好了。。
+使用起来方便。。一共才1行代码。。扔BaseActivity里就好了。。
 
 当然功能很弱逼。。。比注解形的弱多了。。。
