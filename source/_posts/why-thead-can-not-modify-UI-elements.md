@@ -12,13 +12,11 @@ http://www.eoeandroid.com/forum.php?mod=viewthread&amp;tid=579938&amp;page=1
 
 索性把内容整理一下...
 
-* * *
+---
 
 做Android开发初期大部分开发者都会遇到下面这个问题.
 
-android.view.viewroot$calledfromwrongthreadexception: only the original thread that created a view
-
-hierarchy can touch its views.
+    android.view.viewroot$calledfromwrongthreadexception: only the original thread that created a view hierarchy can touch its views.
 
 原因大半都是 由于在异步线程中视图 更新界面中的元素
 
@@ -29,11 +27,12 @@ hierarchy can touch its views.
 
 但是仔细看这个Exception说明
 
-only the original thread that created a view hierarchy can touch its views.
+`only the original thread that created a view hierarchy can touch its views.`
 
-里面并没有提到 主线程/UI 线程,只是提到,必须是创建View hierarchy 的线程
+里面并没有提到 主线程/UI 线程,只是提到,必须是创建`View hierarchy`的线程
 
 !注意区分
+
 创建View的线程和创建View hierarchy的不一定是同一个线程,不要理解错了,下面在源码中具体分析
 
 观察ViewRoot源码中抛出calledfromwrongthreadexception的位置
@@ -46,11 +45,10 @@ only the original thread that created a view hierarchy can touch its views.
                     "Only the original thread that created a view hierarchy can touch its views.");
         }
     }
-    `</pre>
 
-    可以注意到 这里只检查了 当前执行线程和 mThread是否为同一个线程
+可以注意到 这里只检查了 当前执行线程和 mThread是否为同一个线程
 
-    <pre>`public ViewRoot(Context context) {
+    public ViewRoot(Context context) {
 
          super();
          if (MEASURE_LATENCY &amp;&amp; lt == null) {
@@ -66,54 +64,53 @@ only the original thread that created a view hierarchy can touch its views.
          getWindowSession(context.getMainLooper());
 
          mThread = Thread.currentThread();
-    `</pre>
 
-    由
-    ViewRoot的构造函数可以看到,mThread被绑定在了 创建viewRoot的线程上.
+由ViewRoot的构造函数可以看到,mThread被绑定在了 创建`viewRoot`的线程上.
 
-    当然大部分情况下,ViewRoot都是在主线程中创建的,所以在异步线程中修改view会造成checkThread失败.
+当然大部分情况下,`ViewRoot`都是在主线程中创建的,所以在异步线程中修改view会造成checkThread失败.
 
-    mTextView.setText("123");
+mTextView.setText("123");为例子.
 
-    为例子.
+跟踪一下调用栈
 
-    跟踪一下调用栈
+    -- android.widget.TextView.setText
 
-    <pre>`-&gt; android.widget.TextView.setText
+      -- android.widget.TextView.checkForRelayout
 
-        -&gt; android.widget.TextView.checkForRelayout
+        -- android.view.View.invalidate
 
-          -&gt; android.view.View.invalidate
+            -- android.view.ViewGroup.invalidateChild
 
-            -&gt; android.view.ViewGroup.invalidateChild
+              -- android.view.ViewRoot.invalidateChildInParent
 
-              -&gt; android.view.ViewRoot.invalidateChildInParent
+                -- android.view.ViewRoot.invalidateChild
 
-                -&gt; android.view.ViewRoot.invalidateChild
+                  -- android.view.ViewRoot.checkThread
 
-                  -&gt; android.view.ViewRoot.checkThread
-    `</pre>
+可以看到 view会不断遍历去获取 ViewParent
+一个视图上的View遍历到最后 就是 获取到了 ViewRoot
 
-    可以看到 view会不断遍历去获取 ViewParent
-    一个视图上的View遍历到最后 就是 获取到了 ViewRoot
-    (ViewRoot本身就是ViewParent的一个子类)
-    然后就会调用到上面提到的 checkThread()
 
-    到这里有一个结论:
-    UI修改操作确实会验证操作的线程
+(ViewRoot本身就是ViewParent的一个子类)
+
+然后就会调用到上面提到的 checkThread()
+
+到这里有一个结论:
+
+UI修改操作确实会验证操作的线程
 
     * * *
 
-    回到标题上来说, 因为 ViewRoot是由UI线程创建的,所以所有被添加到ViewRoot下的子View都必须在UI线程中修改,看起来也很合理.
-    那么,有可能在非UI线程中创建ViewRoot吗?
+回到标题上来说, 因为 ViewRoot是由UI线程创建的,所以所有被添加到ViewRoot下的子View都必须在UI线程中修改,看起来也很合理.
+那么,有可能在非UI线程中创建ViewRoot吗?
 
-    其实是可以的.
+其实是可以的.
 
-    这里就涉及到ViewRoot和WindowManager之间的关系
+这里就涉及到ViewRoot和WindowManager之间的关系
 
-    demo代码如下:
+demo代码如下:
 
-    <pre>`package com.dk.asyncui;
+    package com.dk.asyncui;
 
     import android.app.Activity;
     import android.graphics.PixelFormat;
@@ -169,15 +166,14 @@ only the original thread that created a view hierarchy can touch its views.
                      }
               });
        }
-    `</pre>
 
     }
 
-    可以看到,我在异步线程中将 mButton添加到 WindowManager中
+可以看到,我在异步线程中将 mButton添加到 WindowManager中
 
-    查看 WindowManangerImpl中addView的代码：
+查看 WindowManangerImpl中addView的代码：
 
-    <pre>`public void addView(View view, ViewGroup.LayoutParams params,
+    public void addView(View view, ViewGroup.LayoutParams params,
             Display display, Window parentWindow) {
         if (view == null) {
             throw new IllegalArgumentException("view must not be null");
