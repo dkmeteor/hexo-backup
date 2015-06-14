@@ -1,8 +1,8 @@
-title: Performance update for Folder-ResideMenu
+title: Folder-ResideMenu性能优化(Performance update for Folder-ResideMenu)
 date: 2015-06-14 23:42:20
 tags:
 ---
-#Performance Update for Folder-ResideMenu
+#Folder-ResideMenu性能优化(Performance update for Folder-ResideMenu)
 
 Folder-ResideMenu的核心部分算完成了,剩下的就是修复一些bug,于是我顺便做了下性能测试
 结果如下:
@@ -26,6 +26,8 @@ WTF??!!
 - 看一下Memory monitor , 额...内存抖动....
 
 
+![image](../images/folder-residemenu-performance-memory-monitor.png)
+
 
     public float[] createOffsetVerts(float offset, float pointerY) {
         applyCurveXEffect(offset);
@@ -46,7 +48,7 @@ WTF??!!
 
 可以看到,干掉Shader以后,性能获得了无与伦比的提示
 
-
+![image](../images/folder-residemenu-performance-no-shader.png)
 
 
 
@@ -55,10 +57,11 @@ Shader就是扭曲效果之上渲染的阴影,发个对比图比较直观
 
 阴影的Alpha会随着滑动不断加深来模拟褶皱越来越深的效果
 
-无Shader                                                                  有Shader
+无Shader _______________________________________ 有Shader
 
 
 
+![image](../images/folder-residemenu-performance-without-shader.png)   ![image](../images/folder-residemenu-performance-with-shader.png)
 
 
 
@@ -180,7 +183,7 @@ tempCanvas只会创建一次,看来仍在这里也没什么问题
 
 再跑起来看一下
 
-
+ ![image](../images/folder-residemenu-performance-result.png)
 
 
 哦哦 看起来非常不错了.....
@@ -189,18 +192,19 @@ tempCanvas只会创建一次,看来仍在这里也没什么问题
 对比一下QQ
 
 
+ ![image](../images/folder-residemenu-performance-qq.png)
 
 当然QQ整个View比我这个Demo复杂的多,光View层级就得复杂个几十倍把,
 不过这锯齿形的帧率也很奇怪..
 
 
 
-但是我注意到....我的有2帧绘制的非常慢? 看起来像是坏点?
+但是我注意到....我的有2帧绘制的非常慢? 
 What is that?
 
 
 反复操作了几次以后发现,那个长条就是缩放动画开始的第一帧...
-让我想想第一帧之前做了什么? 截取当前View生成Bitmap
+第一帧之前做了什么? 截取当前View生成Bitmap
 把当前ContentView偷偷换成了Bitmap截图
 当然,根据优化后的代码,还生成了一个ShaderBitmap
 
@@ -211,7 +215,7 @@ ok
 
 ---
 
-首先可以想到,最容易造成新能问题的,自然就是 Bitmap生成了
+首先可以想到,最容易造成性能问题的,自然就是 Bitmap生成了
 还记得上面做的Shader优化的话
 我们会在 动画触发 的时候
 
@@ -221,11 +225,12 @@ ok
 
 05-28 16:23:03.908    4153-4153/com.dk.sample.folder.residemenu I/System.out﹕ CreateShader:34
 
-大约在25~35ms左右
+反复运行了几次以后，发现生成Shader大约在25~35ms左右
 这样的话 这一帧渲染时间当然一定会超过16ms了...
 
 仔细思考一下这个系统,我其实只需要2个方向的不同Shader
-那么预先把他们生成好并cache起来,就不必再ondraw时再去生成了
+也许预先把他们生成好并cache起来,就不必在ondraw时再去生成了
+反正Shader和content内容本身没什么关系...
 
 
 
