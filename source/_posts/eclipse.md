@@ -7,10 +7,10 @@ tags:
 ---
 Eclipse使用一段时间后， 突然弹出这个
 
-![error1](http://dk-exp.com/wp-content/uploads/2014/08/error1-300x213.jpg)
+![error1](/images/eclipse-conflict-error1.jpg)
 点击OK后弹出下面这个
 
-![error2](http://dk-exp.com/wp-content/uploads/2014/08/error2-300x144.jpg)
+![error2](/images/eclipse-conflict-error2.jpg)
 再点击 No....过一会上面按个又会弹出...
 
 家里的电脑配的环境，本来就用的少，不影响正常工作，就是很烦.....
@@ -30,7 +30,7 @@ Any other solution?------------------
 2014/08/10
 
 又出现了.......百度到一个帖子说是和`hydradm.exe hydradm64.exe` 冲突....
-这2个是 AMD显卡驱动带的催化剂...我把这2个进程杀掉看看
+这2个是 AMD显卡驱动带的催化剂...把这2个进程杀掉看看
 
 
 杀掉以后目前还没出现过...

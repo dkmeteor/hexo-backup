@@ -6,7 +6,7 @@ date: 2015-03-19 17:55:51
 tags:
 ---
 
-[![circle_animation](http://dk-exp.com/wp-content/uploads/2015/03/circle_animation.gif)](http://dk-exp.com/wp-content/uploads/2015/03/circle_animation.gif)
+![circle_animation](/images/circle_animation_demo.gif)
 
 
 

@@ -5,7 +5,9 @@ categories:
 date: 2014-07-31 08:48:11
 tags:
 ---
+Show a sinking effect
 
-<span style="color: #666666;">Show a sinking effect</span>
+
+![demo](/images/sinking.gif)
 
 source: https://github.com/dkmeteor/Sinking-View

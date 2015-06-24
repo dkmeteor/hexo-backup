@@ -15,9 +15,8 @@ tags:
 
 最终结果代码是这样
 
-&nbsp;
-
-<pre class="lang:default decode:true">      Process process = null;
+    
+		Process process = null;
         DataOutputStream os = null;
         try {
             process = Runtime.getRuntime().exec("su");
@@ -40,7 +39,7 @@ tags:
                 }
             process.destroy();
         }
-</pre>
+
 
 主要麻烦是玩坏了就要重建虚拟机...好在Genymotion启动速度还可以
 
@@ -50,15 +49,10 @@ tags:
 
 但是重启以后，系统居然回到未初始化状态...类似于 恢复出厂设置 的结果......
 
-&nbsp;
 
-[![rm](http://dk-exp.com/wp-content/uploads/2015/02/rm.jpg)](http://dk-exp.com/wp-content/uploads/2015/02/rm.jpg)
-
-&nbsp;
+![rm](/images/rm.jpg)
 
 真机未测试...看有没有勇者试一下...变砖了本人不负任何责任....
-
-&nbsp;
 
 * * *
 

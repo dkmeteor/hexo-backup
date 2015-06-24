@@ -22,11 +22,11 @@ tags:
 
 于是专门下载下来测试了一下，确实可以。
 
-然是当使用 UI Automator 把View Tree拉下来的看的时候
+但是使用 UI Automator 把View Tree拉下来的看的时候
 
 很明显可以发现这其实是一个 WebView
 
-[![map1](http://dk-exp.com/wp-content/uploads/2014/10/map1-300x193.jpg)](http://dk-exp.com/wp-content/uploads/2014/10/map1.jpg)
+![uiautomator-xiecheng](/images/uiautomator-xiecheng.jpg)
 
 
 

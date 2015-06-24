@@ -6,7 +6,7 @@ date: 2015-01-26 04:45:44
 tags:
 ---
 
-[![rs](http://dk-exp.com/wp-content/uploads/2015/01/rs1.png)](http://dk-exp.com/wp-content/uploads/2015/01/rs1.png)
+![rs](/images/rs-youyube.png)
 
 填个坑...很早以前就知道这个效果,当时只知道是用RenderScript做的..
 

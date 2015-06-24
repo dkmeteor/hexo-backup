@@ -7,7 +7,7 @@ date: 2015-03-22 18:35:39
 tags:
 ---
 
-[![circle_animation2](http://dk-exp.com/wp-content/uploads/2015/03/circle_animation2.gif)](http://dk-exp.com/wp-content/uploads/2015/03/circle_animation2.gif)
+![circle_animation](/images/circle_animation_demo2.gif)
 
 
 

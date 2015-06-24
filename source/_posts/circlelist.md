@@ -9,6 +9,7 @@ categories:
 date: 2014-07-30 14:02:42
 ---
 
+![circle_list](/images/circle-list.gif)
 
 https://github.com/dkmeteor/CircleList
 

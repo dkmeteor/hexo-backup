@@ -104,7 +104,7 @@ Activity为什么还需要解耦?
 
 画一下2个模型图
 
-![](file:///C:/Users/DK/AppData/Local/Temp/enhtmlclip/IOC.png)[![IOC](http://dk-exp.com/wp-content/uploads/2015/01/IOC.png)](http://dk-exp.com/wp-content/uploads/2015/01/IOC.png)
+![IOC](/images/IOC.png)
 
 
 有区别?

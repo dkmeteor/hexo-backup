@@ -8,7 +8,7 @@ tags:
 
 &nbsp;
 
-[![Folder-DrawerLayout](http://dk-exp.com/wp-content/uploads/2015/01/Folder-DrawerLayout.gif)](http://dk-exp.com/wp-content/uploads/2015/01/Folder-DrawerLayout.gif)
+![folder-drawer-layout](/images/Folder-DrawerLayout-develop-1.gif)
 
 动态效果加进去了.....
 

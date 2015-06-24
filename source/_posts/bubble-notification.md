@@ -10,7 +10,7 @@ tags:
 
 # Demo
 
-![Examples list](http://dk-exp.com/wp-content/uploads/2014/08/WaterDrop.gif)
+![Examples list](/images/bubble-notification.gif)
 
 Effect like QQ 5.0 and add an explosion animation.
 

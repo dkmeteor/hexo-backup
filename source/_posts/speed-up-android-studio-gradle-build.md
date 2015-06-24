@@ -32,7 +32,7 @@ From now on Gradle will use a daemon to build, whether you are using Gradle from
 
 参考Android Studio配置选项
 
-[![Image](http://dk-exp.com/wp-content/uploads/2015/03/Image-1024x565.png)](http://dk-exp.com/wp-content/uploads/2015/03/Image.png)
+![speed-up-gradle](/images/gradle-build-speed-up-android-studio-setting.png)
 
 Android Studio 1.1.0+版本中该配置已经默认打开。
 

@@ -9,13 +9,13 @@ tags:
 
 bither:
 
-[![bither](/images/bither-bither.jpg)]
+![bither](/images/bither-bither.jpg)
 
 
 
 android:
 
-[![android](/images/bither-android.jpg)]
+![android](/images/bither-android.jpg)
 
 
 Enlarge image with **3200%** , the bither-android-jpeg is more smooth.

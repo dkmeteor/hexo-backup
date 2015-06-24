@@ -8,7 +8,7 @@ tags:
 
 ## ClientProtocolException / CircularRedirectException
 
-[![redirect](http://dk-exp.com/wp-content/uploads/2014/12/redirect-1024x576.png)](http://dk-exp.com/wp-content/uploads/2014/12/redirect.png)
+![redirect](/images/redirect.png)
 
 
 CircularRedirectException 循环重定向

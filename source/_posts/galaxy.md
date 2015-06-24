@@ -7,7 +7,9 @@ date: 2015-03-01 07:03:07
 tags:
 ---
 
-[![Screenshot_2015-03-01-14-25-18](http://dk-exp.com/wp-content/uploads/2015/03/Screenshot_2015-03-01-14-25-18-576x1024.png)](http://dk-exp.com/wp-content/uploads/2015/03/Screenshot_2015-03-01-14-25-18.png)
+![galaxy-high](/images/galaxy-high.png)
+
+![galaxy-low](/images/galaxy-low.png)
 
 https://github.com/dkmeteor/Galaxy
 
@@ -23,7 +25,4 @@ https://github.com/dkmeteor/Galaxy
 
 但是我要build就发现.......在SDK21里 全是@hide 的class
 
-
-把SDK换成15的又 缺一堆字段.....
-
-试了半天....发现只能用 SDK 17编译
+试了半天....发现只能用 SDK 17编译....这玩意也没个集成文档
