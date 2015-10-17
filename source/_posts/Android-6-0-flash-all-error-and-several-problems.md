@@ -1,4 +1,6 @@
 title: Android 6.0 刷机各种坑记录(防砖)
+categories:
+  - android
 date: 2015-10-15 13:55:31
 tags:
 ---
