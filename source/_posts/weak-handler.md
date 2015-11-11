@@ -289,7 +289,7 @@ https://github.com/badoo/android-weak-handler
 **但是**
 
 作为匿名内部类被传入的Runnable对象如果只存在一个WeakReference,那意味着,任何一次GC操作都将导致其被回收.
-就看他自己写的例子
+看看这个例子
 
 
 	import com.badoo.mobile.util.WeakHandler;
@@ -353,7 +353,7 @@ https://github.com/badoo/android-weak-handler
 如果在大型项目中遇到这样的问题,排查一定是灾难性的.因为GC的不确定性,出现了回调丢失情况一定是随机的,难以预测的,难以重现的.
 
 
-而处理这个问题的办法是,将mHandler从临时变量 换成 成Activity的一个字段.
+而处理这个问题的办法是,将mHandler从临时变量 换成 成Activity的一个实例变量.
 
 
 然而通常程序员不一定意识这2种写法的区别,而且使用系统提供的Handler时,这2种写法是没有区别的.
