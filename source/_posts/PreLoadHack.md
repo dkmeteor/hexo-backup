@@ -75,8 +75,8 @@ Android-Skin-Loader并没有覆盖application的getResource方法.
 
 - onThemeUpdate方法中遍历所有SkinItem并调用apply方法修改参数
 
-	public void apply(View view) {
-		
+
+	public void apply(View view) {		
 		if(RES_TYPE_NAME_COLOR.equals(attrValueTypeName)){
 			view.setBackgroundColor(SkinManager.getInstance().getColor(attrValueRefId));
 		}else if(RES_TYPE_NAME_DRAWABLE.equals(attrValueTypeName)){
