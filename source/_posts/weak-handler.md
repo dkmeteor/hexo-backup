@@ -1,4 +1,4 @@
-title: Weak handler
+title: Weak Handler 与 内存泄露
 date: 2015-11-11 12:08:47
 tags:
 ---
@@ -286,7 +286,7 @@ https://github.com/badoo/android-weak-handler
 这个类的实现有个问题,为了避免持有Runnable的引用,使用WeakRunnable作为Wrapper,为了能够在Activity销毁时释放Runnable,这里使用的WeakReference去持有Runnable引用.
 从目的上看,它确实解决了由于Runnable隐式持有Activity强引用而导致Acticity实例无法销毁的问题
 
-**但是**
+##但是
 
 作为匿名内部类被传入的Runnable对象如果只存在一个WeakReference,那意味着,任何一次GC操作都将导致其被回收.
 看看这个例子
