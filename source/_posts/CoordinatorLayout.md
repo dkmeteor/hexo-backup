@@ -13,10 +13,14 @@ tags: android
 一个包含ActionBar和Banner的header+ViewPager的组合模式
 比如这样：
 
-补图
+![img](/images/appbar_extend.png)
+
 
 然后需要滚动的时候能够将 ActionBar和Banner滚出界面，但是又需要ViewPager的TabLayout能固定在屏幕顶部
+比如滚动后是这样：
 
+
+![img](/images/appbar_close.png)
 
 Github上有很多sticky-viewpager xx-header-viewpager之类的项目提供类似的功能，但是大部分都会存在各种事件冲突问题，比如滑动不流畅，卡顿，弹跳之类的。
 
