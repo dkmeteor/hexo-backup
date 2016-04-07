@@ -124,10 +124,23 @@ support 23.1+新增了
 
 直接原因是Fling Direction错误，导致Fling事件被吃掉了，ACTION_UP/ACTION_CANCEL事件一旦发生，scroll动作直接停止
 
-一个解决方案是重写一个FlingBehavior
+StackOverFlow上一个高票解决方案是重写一个FlingBehavior，并配置给AppBar.
+
+注意，这个Behavior是给AppBar的，不是给下面的可滚动组件的。
+
+	<android.support.design.widget.AppBarLayout
+    android:id="@+id/appbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="your.package.FlingBehavior">
+    <!--your views here-->
+ 	</android.support.design.widget.AppBarLayout>
+
+---
 
 
-	public final class FlingBehavior extends AppBarLayout.Behavior {
+	public class FlingBehavior extends AppBarLayout.Behavior {
+
 	    private static final int TOP_CHILD_FLING_THRESHOLD = 3;
 	    private boolean isPositive;
 
@@ -149,6 +162,7 @@ support 23.1+新增了
 	            final int childAdapterPosition = recyclerView.getChildAdapterPosition(firstChild);
 	            consumed = childAdapterPosition > TOP_CHILD_FLING_THRESHOLD;
 	        }
+	        consumed=false;
 	        return super.onNestedFling(coordinatorLayout, child, target, velocityX, velocityY, consumed);
 	    }
 
@@ -157,7 +171,71 @@ support 23.1+新增了
 	        super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed);
 	        isPositive = dy > 0;
 	    }
-	}
+
+注意consumed计算这部分，会影响滚动形式
+
+请参考父类滚动的实现代码：
+
+	
+ 	@Override
+    public boolean onNestedFling(final CoordinatorLayout coordinatorLayout,
+                final AppBarLayout child, View target, float velocityX, float velocityY,
+                boolean consumed) {
+            boolean flung = false;
+
+            if (!consumed) {
+                // It has been consumed so let's fling ourselves
+                flung = fling(coordinatorLayout, child, -child.getTotalScrollRange(),
+                        0, -velocityY);
+            } else {
+                // If we're scrolling up and the child also consumed the fling. We'll fake scroll
+                // upto our 'collapsed' offset
+                if (velocityY < 0) {
+                    // We're scrolling down
+                    final int targetScroll = -child.getTotalScrollRange()
+                            + child.getDownNestedPreScrollRange();
+                    if (getTopBottomOffsetForScrollingSibling() < targetScroll) {
+                        // If we're currently not expanded more than the target scroll, we'll
+                        // animate a fling
+                        animateOffsetTo(coordinatorLayout, child, targetScroll);
+                        flung = true;
+                    }
+                } else {
+                    // We're scrolling up
+                    final int targetScroll = -child.getUpNestedPreScrollRange();
+                    if (getTopBottomOffsetForScrollingSibling() > targetScroll) {
+                        // If we're currently not expanded less than the target scroll, we'll
+                        // animate a fling
+                        animateOffsetTo(coordinatorLayout, child, targetScroll);
+                        flung = true;
+                    }
+                }
+            }
+
+            mWasNestedFlung = flung;
+            return flung;
+        }
+
+确认你需要滚动哪一步分，你可以简单根据RecyclerView展示的first item的position来判断Recyclerview是否在top位置，也有另一种代码如下：
+
+	@Override
+    public boolean onNestedFling(CoordinatorLayout coordinatorLayout, AppBarLayout child, View target, float velocityX, float velocityY, boolean consumed) {
+        if (target instanceof RecyclerView) {
+            final RecyclerView recyclerView = (RecyclerView) target;
+            consumed = velocityY > 0 || recyclerView.computeVerticalScrollOffset() > 0;
+        }
+        return super.onNestedFling(coordinatorLayout, child, target, velocityX, velocityY, consumed);
+    }
+
+
+
+
+
+另一个解决方案是使用 [smooth-app-bar-layout](https://github.com/henrytao-me/smooth-app-bar-layout)
+
+具体如何使用请参考它自己的文档
+
+当header是Toolbar时，demo运作良好，当headerview高度较大时，滑动会发生剧烈抖动，弹跳，暂时还没去看它源代码，可能是我使用不正确
 
 
 #### 不支持adjustResize
@@ -249,6 +327,115 @@ http://stackoverflow.com/questions/35599125/adjustresize-does-not-work-with-coor
 
 ps.  
 fitSystemWindow 和 adjustResize 和 FLAG_TRANSLUCENT_STATUS 一起使用 一样也会有冲突，造成界面缩放不正常。  当时也是用的这个解决方案。
+
+### CoordinatorLayout的onScrollListener只支持21+
+
+解决方案：
+在Behavior里监听滚动，并把数据传出来
+
+代码和后一个问题贴在一起
+
+注意 我这里只监听了 onDependentViewChanged
+并在这里调用onScroll接口，然后外部实际使用的数据是 headerview.getTop , 并不能覆盖全部情况，但是我本身只用来做状态栏渐变色，有其它使用场景请自行修改
+
+### 当顶部容器不使用Toolbar时，Measure会有问题
+
+解决方案：
+自定义一个 Behavior,继承AppBarLayout.ScrollingViewBehavior
+
+并重载onMeasureChild方法
+
+	public class PatchedScrollingViewBehavior extends AppBarLayout.ScrollingViewBehavior {
+
+	    private OnScrollListener onScrollListener;
+
+	    public PatchedScrollingViewBehavior() {
+	        super();
+	    }
+
+	    public PatchedScrollingViewBehavior(Context context, AttributeSet attrs) {
+	        super(context, attrs);
+	    }
+	   
+	    @Override
+	    public boolean onMeasureChild(CoordinatorLayout parent, View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
+
+	        Log.e("####", "onMeasureChild");
+
+
+	        if (child.getLayoutParams().height == -1) {
+	            List dependencies = parent.getDependencies(child);
+	            if (dependencies.isEmpty()) {
+	                return false;
+	            }
+
+	            AppBarLayout appBar = findFirstAppBarLayout(dependencies);
+	            if (appBar != null && ViewCompat.isLaidOut(appBar)) {
+	                if (ViewCompat.getFitsSystemWindows(appBar)) {
+	                    ViewCompat.setFitsSystemWindows(child, true);
+	                }
+
+	                int scrollRange = appBar.getTotalScrollRange();
+	//                int height = parent.getHeight() - appBar.getMeasuredHeight() + scrollRange;
+	                int parentHeight = View.MeasureSpec.getSize(parentHeightMeasureSpec);
+	                int height = parentHeight - appBar.getMeasuredHeight() + scrollRange;
+	                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.AT_MOST);
+	                parent.onMeasureChild(child, parentWidthMeasureSpec, widthUsed, heightMeasureSpec, heightUsed);
+	                return true;
+	            }
+	        }
+
+	        return false;
+	    }
+
+	    @Override
+	    public void onNestedScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
+	        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
+	    }
+
+	    private static AppBarLayout findFirstAppBarLayout(List<View> views) {
+	        int i = 0;
+	        for (int z = views.size(); i < z; ++i) {
+	            View view = (View) views.get(i);
+	            if (view instanceof AppBarLayout) {
+	                return (AppBarLayout) view;
+	            }
+	        }
+	        return null;
+	    }
+
+	    @Override
+	    public boolean onDependentViewChanged(CoordinatorLayout parent, View child,
+	                                          View dependency) {
+	        if (onScrollListener != null) {
+	            onScrollListener.onScroll(parent, child, dependency);
+	        }
+	        return super.onDependentViewChanged(parent, child, dependency);
+	    }
+
+	    public interface OnScrollListener {
+	        void onScroll(CoordinatorLayout parent, View child,
+	                      View dependency);
+
+	    }
+
+	    public OnScrollListener getOnScrollListener() {
+	        return onScrollListener;
+	    }
+
+	    public void setOnScrollListener(OnScrollListener onScrollListener) {
+	        this.onScrollListener = onScrollListener;
+	    }
+	}
+
+
+
+REF:
+http://stackoverflow.com/questions/30923889/flinging-with-recyclerview-appbarlayout 
+https://github.com/henrytao-me/smooth-app-bar-layout 
+https://code.google.com/p/android/issues/detail?id=177729 
+
+
 
 
 
