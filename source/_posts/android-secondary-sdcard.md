@@ -31,6 +31,7 @@ https://developer.android.com/reference/android/content/ContextWrapper.html#getE
 
 代码贴一下:
 
+``` java
     import java.io.BufferedReader;
 	import java.io.File;
 	import java.io.FileInputStream;
@@ -149,6 +150,7 @@ https://developer.android.com/reference/android/content/ContextWrapper.html#getE
 	    }
 
 	}
+```
 
 	
 以红米1举例,插入SD卡后,mount返回如下
@@ -183,6 +185,8 @@ https://developer.android.com/reference/android/content/ContextWrapper.html#getE
 
 示例代码如下
 
+
+``` java
         try {
                 Scanner scanner = new Scanner(new File("/system/etc/vold.fstab"));
                 while (scanner.hasNext()) {
@@ -207,7 +211,8 @@ https://developer.android.com/reference/android/content/ContextWrapper.html#getE
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            
+```
+         
 
 还是以红米1为例,贴一下'/system/etc/vold.fstab'的内容
 

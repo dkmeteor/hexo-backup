@@ -6,6 +6,7 @@ tags: android
 
 这个Bug log是这样
 
+``` java
 	java.lang.IllegalArgumentException: Receiver not registered: android.widget.ZoomButtonsController$1@487a4290
 	at android.app.ActivityThread$PackageInfo.forgetReceiverDispatcher(ActivityThread.java:793)
 	at android.app.ContextImpl.unregisterReceiver(ContextImpl.java:913)
@@ -20,6 +21,7 @@ tags: android
 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:858)
 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:616)
 	at dalvik.system.NativeStart.main(Native Method)
+```
 
 因为这个Log Trace里没有任何我的代码,所以感觉上和我的应用没什么关系,而且也看不出是在哪个界面哪个地方发生的,当时也没办法复现.
 只是在Umeng的后台会不断收集到这样的crash log,不多,但是偶尔就会有那么几个.
